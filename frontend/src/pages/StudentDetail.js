@@ -26,10 +26,13 @@ export default function StudentDetail() {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    const adminStatus = localStorage.getItem("isAdmin") === "true";
-    setIsAdmin(adminStatus);
     loadStudent();
   }, [studentId]);
+
+  useEffect(() => {
+    const adminStatus = localStorage.getItem("isAdmin") === "true";
+    setIsAdmin(adminStatus);
+  }, []);
 
   const loadStudent = async () => {
     setLoading(true);

@@ -20,6 +20,20 @@ export default function Classes() {
 
   useEffect(() => {
     loadStudents();
+    
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadStudents();
+      }
+    };
+    
+    window.addEventListener('focus', loadStudents);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('focus', loadStudents);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [selectedClass]);
 
   const loadStudents = async () => {

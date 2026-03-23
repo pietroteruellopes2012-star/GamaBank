@@ -11,6 +11,20 @@ export default function Home() {
 
   useEffect(() => {
     loadStudents();
+    
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadStudents();
+      }
+    };
+    
+    window.addEventListener('focus', loadStudents);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('focus', loadStudents);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const loadStudents = async () => {
