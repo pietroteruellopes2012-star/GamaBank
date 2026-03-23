@@ -1,34 +1,80 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&family=Figtree:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Figtree', sans-serif;
+  background: #D8EAF5;
+  color: #0A0A0A;
+  overflow-x: hidden;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.App {
+  min-height: 100vh;
+  background: #D8EAF5;
+  position: relative;
 }
 
-.App-link {
-    color: #61dafb;
+.App::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Unbounded', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.gama-number {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  color: #FF5C00;
+}
+
+.neo-card {
+  background: white;
+  border: 2px solid #0A0A0A;
+  border-radius: 0.75rem;
+  box-shadow: 4px 4px 0 #0A0A0A;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.neo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 #0A0A0A;
+}
+
+.neo-button {
+  border: 2px solid #0A0A0A;
+  box-shadow: 3px 3px 0 #0A0A0A;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.neo-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 #0A0A0A;
+}
+
+.neo-button:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 0 #0A0A0A;
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  border: 2px solid #0A0A0A;
+  box-shadow: 6px 6px 0 #0A0A0A;
 }
