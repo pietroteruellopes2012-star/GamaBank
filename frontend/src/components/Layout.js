@@ -8,13 +8,13 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen relative" style={{ zIndex: 2 }}>
-      <nav className="bg-white border-b-2 border-[#0A0A0A] shadow-[0_4px_0_#0A0A0A] sticky top-0 z-50">
+      <nav className="bg-white border-b-2 border-[#6BB4E8] shadow-[0_4px_0_#6BB4E8] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-black tracking-tighter" style={{ fontFamily: 'Unbounded, sans-serif' }}>
-                <span className="text-[#FF5C00]">GAMA</span>
-                <span className="text-[#0A0A0A]">BANK</span>
+                <span className="text-[#6BB4E8]">GAMA</span>
+                <span className="text-[#4A90C8]">BANK</span>
               </h1>
             </div>
             
@@ -23,10 +23,10 @@ export default function Layout() {
                 to="/"
                 data-testid="nav-home"
                 className={({ isActive }) =>
-                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#0A0A0A] ${
+                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#6BB4E8] ${
                     isActive
-                      ? 'bg-[#0A0A0A] text-white shadow-[2px_2px_0_#FF5C00]'
-                      : 'bg-white text-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:shadow-[3px_3px_0_#0A0A0A] hover:-translate-y-0.5'
+                      ? 'bg-[#6BB4E8] text-white shadow-[2px_2px_0_#4A90C8]'
+                      : 'bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
                   }`
                 }
               >
@@ -37,10 +37,10 @@ export default function Layout() {
                 to="/benefits"
                 data-testid="nav-benefits"
                 className={({ isActive }) =>
-                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#0A0A0A] ${
+                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#6BB4E8] ${
                     isActive
-                      ? 'bg-[#0A0A0A] text-white shadow-[2px_2px_0_#FF5C00]'
-                      : 'bg-white text-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:shadow-[3px_3px_0_#0A0A0A] hover:-translate-y-0.5'
+                      ? 'bg-[#6BB4E8] text-white shadow-[2px_2px_0_#4A90C8]'
+                      : 'bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
                   }`
                 }
               >
@@ -51,10 +51,10 @@ export default function Layout() {
                 to="/activities"
                 data-testid="nav-activities"
                 className={({ isActive }) =>
-                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#0A0A0A] ${
+                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#6BB4E8] ${
                     isActive
-                      ? 'bg-[#0A0A0A] text-white shadow-[2px_2px_0_#FF5C00]'
-                      : 'bg-white text-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:shadow-[3px_3px_0_#0A0A0A] hover:-translate-y-0.5'
+                      ? 'bg-[#6BB4E8] text-white shadow-[2px_2px_0_#4A90C8]'
+                      : 'bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
                   }`
                 }
               >
@@ -65,10 +65,10 @@ export default function Layout() {
                 to="/classes"
                 data-testid="nav-classes"
                 className={({ isActive }) =>
-                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#0A0A0A] ${
+                  `px-5 py-2 rounded-full font-semibold transition-all border-2 border-[#6BB4E8] ${
                     isActive
-                      ? 'bg-[#0A0A0A] text-white shadow-[2px_2px_0_#FF5C00]'
-                      : 'bg-white text-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:shadow-[3px_3px_0_#0A0A0A] hover:-translate-y-0.5'
+                      ? 'bg-[#6BB4E8] text-white shadow-[2px_2px_0_#4A90C8]'
+                      : 'bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
                   }`
                 }
               >
@@ -78,7 +78,7 @@ export default function Layout() {
               <button
                 onClick={() => setShowAdminModal(true)}
                 data-testid="admin-button"
-                className="ml-4 p-2.5 rounded-full bg-[#FF5C00] text-white border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] hover:shadow-[3px_3px_0_#0A0A0A] hover:-translate-y-0.5 transition-all"
+                className="ml-4 p-2.5 rounded-full bg-[#6BB4E8] text-white border-2 border-[#4A90C8] shadow-[2px_2px_0_#4A90C8] hover:shadow-[3px_3px_0_#4A90C8] hover:-translate-y-0.5 transition-all"
                 title="Acesso Admin"
               >
                 <Lock size={20} weight="bold" />

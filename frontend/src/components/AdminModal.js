@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 export default function AdminModal({ isOpen, onClose }) {
   const [password, setPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const adminStatus = localStorage.getItem("isAdmin") === "true";
@@ -25,7 +27,7 @@ export default function AdminModal({ isOpen, onClose }) {
         toast.success("Acesso admin concedido!");
         setPassword("");
         onClose();
-        window.location.reload();
+        navigate("/admin");
       }
     } catch (error) {
       toast.error("Senha incorreta!");
@@ -38,7 +40,12 @@ export default function AdminModal({ isOpen, onClose }) {
     setIsAdmin(false);
     toast.info("Modo admin desativado");
     onClose();
-    window.location.reload();
+    window.location.href = "/";
+  };
+
+  const goToPanel = () => {
+    onClose();
+    navigate("/admin");
   };
 
   return (
@@ -59,23 +66,29 @@ export default function AdminModal({ isOpen, onClose }) {
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleVerify()}
               data-testid="admin-password-input"
-              className="border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] focus:shadow-[3px_3px_0_#0A0A0A] focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus:shadow-[3px_3px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             <Button
               onClick={handleVerify}
               data-testid="admin-verify-button"
-              className="w-full neo-button bg-[#FF5C00] hover:bg-[#FF5C00] text-white rounded-lg"
+              className="w-full neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg"
             >
               Entrar
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-center text-[#4B5563]">Você está no modo administrador</p>
+            <p className="text-center text-[#4A90C8]">Você está no modo administrador</p>
+            <Button
+              onClick={goToPanel}
+              className="w-full neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg"
+            >
+              Ir para Painel Admin
+            </Button>
             <Button
               onClick={handleLogout}
               data-testid="admin-logout-button"
-              className="w-full neo-button bg-[#0A0A0A] hover:bg-[#0A0A0A] text-white rounded-lg"
+              className="w-full neo-button bg-[#4A90C8] hover:bg-[#4A90C8] text-white rounded-lg"
             >
               Sair do Modo Admin
             </Button>

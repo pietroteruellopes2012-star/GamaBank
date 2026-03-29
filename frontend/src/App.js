@@ -7,6 +7,7 @@ import Benefits from "@/pages/Benefits";
 import Activities from "@/pages/Activities";
 import Classes from "@/pages/Classes";
 import StudentDetail from "@/pages/StudentDetail";
+import AdminPanel from "@/pages/AdminPanel";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="classes" element={<Classes />} />
             <Route path="student/:studentId" element={<StudentDetail />} />
           </Route>
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </BrowserRouter>
     </div>

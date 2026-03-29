@@ -102,7 +102,7 @@ export default function StudentDetail() {
         <button
           onClick={() => navigate("/classes")}
           data-testid="back-button"
-          className="flex items-center gap-2 mb-8 text-[#4B5563] hover:text-[#0A0A0A] transition-colors font-semibold"
+          className="flex items-center gap-2 mb-8 text-[#4B5563] hover:text-[#6BB4E8] transition-colors font-semibold"
         >
           <ArrowLeft size={20} weight="bold" />
           Voltar para Turmas
@@ -122,7 +122,7 @@ export default function StudentDetail() {
               <div className="text-right">
                 <p className="text-sm text-[#4B5563] mb-1">Saldo Atual</p>
                 <div className="flex items-center gap-2">
-                  <Coins size={32} weight="bold" className="text-[#FF5C00]" />
+                  <Coins size={32} weight="bold" className="text-[#6BB4E8]" />
                   <span className="text-5xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                     {student.balance}
                   </span>
@@ -132,7 +132,7 @@ export default function StudentDetail() {
           </div>
 
           {isAdmin && (
-            <div className="neo-card p-6 bg-[#FF5C00] border-[#0A0A0A]" data-testid="admin-panel">
+            <div className="neo-card p-6 bg-[#6BB4E8] border-[#6BB4E8]" data-testid="admin-panel">
               <h3 className="text-xl font-black tracking-tighter mb-4 text-white" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                 Painel Admin
               </h3>
@@ -143,7 +143,7 @@ export default function StudentDetail() {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   data-testid="gama-amount-input"
-                  className="bg-white border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="bg-white border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
                 <Input
                   type="text"
@@ -151,14 +151,14 @@ export default function StudentDetail() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   data-testid="gama-description-input"
-                  className="bg-white border-2 border-[#0A0A0A] shadow-[2px_2px_0_#0A0A0A] focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="bg-white border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     onClick={() => handleGamaOperation("add")}
                     disabled={processing}
                     data-testid="add-gamas-button"
-                    className="neo-button bg-[#0A0A0A] hover:bg-[#0A0A0A] text-white rounded-lg flex items-center gap-2"
+                    className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg flex items-center gap-2"
                   >
                     <Plus size={18} weight="bold" />
                     Adicionar
@@ -167,7 +167,7 @@ export default function StudentDetail() {
                     onClick={() => handleGamaOperation("subtract")}
                     disabled={processing}
                     data-testid="subtract-gamas-button"
-                    className="neo-button bg-white hover:bg-white text-[#0A0A0A] rounded-lg flex items-center gap-2"
+                    className="neo-button bg-white hover:bg-white text-[#6BB4E8] rounded-lg flex items-center gap-2"
                   >
                     <Minus size={18} weight="bold" />
                     Remover
@@ -192,10 +192,10 @@ export default function StudentDetail() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                   data-testid={`transaction-${index}`}
-                  className="flex items-center justify-between p-4 bg-[#D8EAF5] border-2 border-[#0A0A0A] rounded-lg"
+                  className="flex items-center justify-between p-4 bg-[#D8EAF5] border-2 border-[#6BB4E8] rounded-lg"
                 >
                   <div className="flex-1">
-                    <p className="font-semibold text-[#0A0A0A]">{transaction.description}</p>
+                    <p className="font-semibold text-[#6BB4E8]">{transaction.description}</p>
                     <p className="text-sm text-[#4B5563]">
                       {new Date(transaction.timestamp).toLocaleString('pt-BR')}
                     </p>

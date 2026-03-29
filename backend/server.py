@@ -163,6 +163,55 @@ async def get_activities():
     return activities
 
 
+@api_router.post("/admin/students")
+async def create_student(student: Student):
+    doc = student.model_dump()
+    await db.students.insert_one(doc)
+    return {"success": True, "student": student}
+
+@api_router.put("/admin/students/{student_id}")
+async def update_student(student_id: str, student: Student):
+    await db.students.update_one({"id": student_id}, {"$set": student.model_dump()})
+    return {"success": True}
+
+@api_router.delete("/admin/students/{student_id}")
+async def delete_student(student_id: str):
+    await db.students.delete_one({"id": student_id})
+    await db.transactions.delete_many({"student_id": student_id})
+    return {"success": True}
+
+@api_router.post("/admin/benefits")
+async def create_benefit(benefit: Benefit):
+    doc = benefit.model_dump()
+    await db.benefits.insert_one(doc)
+    return {"success": True, "benefit": benefit}
+
+@api_router.put("/admin/benefits/{benefit_id}")
+async def update_benefit(benefit_id: str, benefit: Benefit):
+    await db.benefits.update_one({"id": benefit_id}, {"$set": benefit.model_dump()})
+    return {"success": True}
+
+@api_router.delete("/admin/benefits/{benefit_id}")
+async def delete_benefit(benefit_id: str):
+    await db.benefits.delete_one({"id": benefit_id})
+    return {"success": True}
+
+@api_router.post("/admin/activities")
+async def create_activity(activity: Activity):
+    doc = activity.model_dump()
+    await db.activities.insert_one(doc)
+    return {"success": True, "activity": activity}
+
+@api_router.put("/admin/activities/{activity_id}")
+async def update_activity(activity_id: str, activity: Activity):
+    await db.activities.update_one({"id": activity_id}, {"$set": activity.model_dump()})
+    return {"success": True}
+
+@api_router.delete("/admin/activities/{activity_id}")
+async def delete_activity(activity_id: str):
+    await db.activities.delete_one({"id": activity_id})
+    return {"success": True}
+
 @api_router.post("/seed")
 async def seed_database():
     await db.students.delete_many({})

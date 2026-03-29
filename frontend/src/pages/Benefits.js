@@ -33,7 +33,7 @@ export default function Benefits() {
       >
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Unbounded, sans-serif' }}>
-            <span className="text-[#0A0A0A]">Benefícios</span>
+            <span className="text-[#6BB4E8]">Benefícios</span>
           </h1>
           <p className="text-lg md:text-xl text-[#4B5563] max-w-2xl mx-auto">
             Troque seus gamas por benefícios incríveis!
@@ -50,7 +50,7 @@ export default function Benefits() {
               className="neo-card overflow-hidden"
               data-testid={`benefit-card-${index}`}
             >
-              <div className="aspect-video overflow-hidden border-b-2 border-[#0A0A0A]">
+              <div className="aspect-video overflow-hidden border-b-2 border-[#6BB4E8]">
                 <img
                   src={benefit.image_url}
                   alt={benefit.name}
@@ -66,7 +66,7 @@ export default function Benefits() {
                 </p>
                 <div className="flex items-center justify-between pt-4 border-t-2 border-[#D8EAF5]">
                   <div className="flex items-center gap-2">
-                    <Coins size={24} weight="bold" className="text-[#FF5C00]" />
+                    <Coins size={24} weight="bold" className="text-[#6BB4E8]" />
                     <span className="text-3xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                       {benefit.cost}
                     </span>

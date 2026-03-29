@@ -33,7 +33,7 @@ export default function Activities() {
       >
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Unbounded, sans-serif' }}>
-            <span className="text-[#0A0A0A]">Como Ganhar</span> <span className="text-[#FF5C00]">GAMAS</span>
+            <span className="text-[#6BB4E8]">Como Ganhar</span> <span className="text-[#6BB4E8]">GAMAS</span>
           </h1>
           <p className="text-lg md:text-xl text-[#4B5563] max-w-2xl mx-auto">
             Realize essas atividades e acumule gamas!
@@ -50,7 +50,7 @@ export default function Activities() {
               className="neo-card overflow-hidden"
               data-testid={`activity-card-${index}`}
             >
-              <div className="aspect-video overflow-hidden border-b-2 border-[#0A0A0A]">
+              <div className="aspect-video overflow-hidden border-b-2 border-[#6BB4E8]">
                 <img
                   src={activity.image_url}
                   alt={activity.name}
@@ -66,12 +66,12 @@ export default function Activities() {
                 </p>
                 <div className="flex items-center justify-between pt-4 border-t-2 border-[#D8EAF5]">
                   <div className="flex items-center gap-2">
-                    <Coins size={24} weight="bold" className="text-[#FF5C00]" />
+                    <Coins size={24} weight="bold" className="text-[#6BB4E8]" />
                     <span className="text-3xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                       +{activity.reward}
                     </span>
                   </div>
-                  <span className="text-xs font-semibold bg-[#D8EAF5] px-3 py-1 rounded-full border-2 border-[#0A0A0A]">
+                  <span className="text-xs font-semibold bg-[#D8EAF5] px-3 py-1 rounded-full border-2 border-[#6BB4E8]">
                     Ganhe
                   </span>
                 </div>
