@@ -77,6 +77,10 @@ class GamaOperation(BaseModel):
     operation: str
 
 
+class BankBalance(BaseModel):
+    balance: int
+
+
 @api_router.get("/")
 async def root():
     return {"message": "Gama Bank API"}
@@ -144,11 +148,55 @@ async def update_student_gamas(student_id: str, operation: GamaOperation):
     
     await db.transactions.insert_one(transaction.model_dump())
     
+    bank = await db.bank.find_one({}, {"_id": 0})
+    if bank:
+        bank_change = -amount_change
+        new_bank = bank["balance"] + bank_change
+        await db.bank.update_one({}, {"$set": {"balance": new_bank}})
+    
     return {
         "success": True,
         "new_balance": new_balance,
         "transaction": transaction
     }
+
+
+@api_router.get("/bank")
+async def get_bank_balance():
+    bank = await db.bank.find_one({}, {"_id": 0})
+    if not bank:
+        await db.bank.insert_one({"balance": 10000})
+        return {"balance": 10000}
+    return bank
+
+
+@api_router.put("/admin/bank")
+async def update_bank_balance(data: BankBalance):
+    await db.bank.update_one({}, {"$set": {"balance": data.balance}}, upsert=True)
+    return {"success": True, "balance": data.balance}
+
+
+@api_router.post("/admin/students")
+async def create_student(data: dict):
+    student = Student(**data)
+    doc = student.model_dump()
+    await db.students.insert_one(doc)
+    return {"success": True, "student": student}
+
+
+@api_router.put("/admin/students/{student_id}")
+async def update_student(student_id: str, data: dict):
+    await db.students.update_one({"id": student_id}, {"$set": data})
+    return {"success": True}
+
+
+@api_router.delete("/admin/students/{student_id}")
+async def delete_student(student_id: str):
+    result = await db.students.delete_one({"id": student_id})
+    await db.transactions.delete_many({"student_id": student_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Aluno não encontrado")
+    return {"success": True}
 
 
 @api_router.get("/benefits", response_model=List[Benefit])
@@ -157,60 +205,78 @@ async def get_benefits():
     return benefits
 
 
+@api_router.post("/admin/benefits")
+async def create_benefit(data: dict):
+    benefit = Benefit(**data)
+    doc = benefit.model_dump()
+    await db.benefits.insert_one(doc)
+    return {"success": True, "benefit": benefit}
+
+
+@api_router.put("/admin/benefits/{benefit_id}")
+async def update_benefit(benefit_id: str, data: dict):
+    await db.benefits.update_one({"id": benefit_id}, {"$set": data})
+    return {"success": True}
+
+
+@api_router.delete("/admin/benefits/{benefit_id}")
+async def delete_benefit(benefit_id: str):
+    result = await db.benefits.delete_one({"id": benefit_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Benefício não encontrado")
+    return {"success": True}
+
+
 @api_router.get("/activities", response_model=List[Activity])
 async def get_activities():
     activities = await db.activities.find({}, {"_id": 0}).to_list(1000)
     return activities
 
 
-@api_router.post("/admin/students")
-async def create_student(student: Student):
-    doc = student.model_dump()
-    await db.students.insert_one(doc)
-    return {"success": True, "student": student}
-
-@api_router.put("/admin/students/{student_id}")
-async def update_student(student_id: str, student: Student):
-    await db.students.update_one({"id": student_id}, {"$set": student.model_dump()})
-    return {"success": True}
-
-@api_router.delete("/admin/students/{student_id}")
-async def delete_student(student_id: str):
-    await db.students.delete_one({"id": student_id})
-    await db.transactions.delete_many({"student_id": student_id})
-    return {"success": True}
-
-@api_router.post("/admin/benefits")
-async def create_benefit(benefit: Benefit):
-    doc = benefit.model_dump()
-    await db.benefits.insert_one(doc)
-    return {"success": True, "benefit": benefit}
-
-@api_router.put("/admin/benefits/{benefit_id}")
-async def update_benefit(benefit_id: str, benefit: Benefit):
-    await db.benefits.update_one({"id": benefit_id}, {"$set": benefit.model_dump()})
-    return {"success": True}
-
-@api_router.delete("/admin/benefits/{benefit_id}")
-async def delete_benefit(benefit_id: str):
-    await db.benefits.delete_one({"id": benefit_id})
-    return {"success": True}
-
 @api_router.post("/admin/activities")
-async def create_activity(activity: Activity):
+async def create_activity(data: dict):
+    activity = Activity(**data)
     doc = activity.model_dump()
     await db.activities.insert_one(doc)
     return {"success": True, "activity": activity}
 
+
 @api_router.put("/admin/activities/{activity_id}")
-async def update_activity(activity_id: str, activity: Activity):
-    await db.activities.update_one({"id": activity_id}, {"$set": activity.model_dump()})
+async def update_activity(activity_id: str, data: dict):
+    await db.activities.update_one({"id": activity_id}, {"$set": data})
     return {"success": True}
+
 
 @api_router.delete("/admin/activities/{activity_id}")
 async def delete_activity(activity_id: str):
-    await db.activities.delete_one({"id": activity_id})
+    result = await db.activities.delete_one({"id": activity_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Atividade não encontrada")
     return {"success": True}
+
+
+@api_router.get("/transactions")
+async def get_all_transactions():
+    transactions = await db.transactions.find({}, {"_id": 0}).sort("timestamp", -1).to_list(1000)
+    for t in transactions:
+        student = await db.students.find_one({"id": t["student_id"]}, {"_id": 0, "name": 1})
+        t["student_name"] = student["name"] if student else "Desconhecido"
+    return transactions
+
+
+@api_router.put("/admin/transactions/{transaction_id}")
+async def update_transaction(transaction_id: str, data: dict):
+    await db.transactions.update_one({"id": transaction_id}, {"$set": data})
+    return {"success": True}
+
+
+@api_router.delete("/admin/transactions/{transaction_id}")
+async def delete_transaction(transaction_id: str):
+    result = await db.transactions.delete_one({"id": transaction_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Transação não encontrada")
+    return {"success": True}
+
 
 @api_router.post("/seed")
 async def seed_database():
@@ -218,6 +284,9 @@ async def seed_database():
     await db.transactions.delete_many({})
     await db.benefits.delete_many({})
     await db.activities.delete_many({})
+    await db.bank.delete_many({})
+    
+    await db.bank.insert_one({"balance": 10000})
     
     students = [
         {"id": str(uuid.uuid4()), "name": "Guilherme", "class_year": "8", "balance": 45},

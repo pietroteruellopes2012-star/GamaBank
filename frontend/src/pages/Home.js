@@ -7,22 +7,25 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Home() {
   const [students, setStudents] = useState([]);
+  const [bankBalance, setBankBalance] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadStudents();
+    loadBank();
     
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         loadStudents();
+        loadBank();
       }
     };
     
-    window.addEventListener('focus', loadStudents);
+    window.addEventListener('focus', () => { loadStudents(); loadBank(); });
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
     return () => {
-      window.removeEventListener('focus', loadStudents);
+      window.removeEventListener('focus', () => { loadStudents(); loadBank(); });
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
@@ -35,6 +38,15 @@ export default function Home() {
       console.error("Erro ao carregar alunos:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadBank = async () => {
+    try {
+      const response = await axios.get(`${API}/bank`);
+      setBankBalance(response.data.balance);
+    } catch (error) {
+      console.error("Erro ao carregar banco:", error);
     }
   };
 
@@ -64,11 +76,31 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="neo-card p-8"
+            data-testid="bank-balance-card"
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[#4A90C8] font-semibold mb-2">Banco de Gamas</p>
+                <p className="text-5xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                  {bankBalance}
+                </p>
+              </div>
+              <div className="p-3 bg-[#E8F4FA] rounded-lg border-2 border-[#6BB4E8]">
+                <Coins size={32} weight="bold" className="text-[#6BB4E8]" />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="neo-card p-8"
             data-testid="total-gamas-card"
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[#4A90C8] font-semibold mb-2">Total de Gamas</p>
+                <p className="text-[#4A90C8] font-semibold mb-2">Total de Gamas (Alunos)</p>
                 <p className="text-5xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                   {totalGamas}
                 </p>

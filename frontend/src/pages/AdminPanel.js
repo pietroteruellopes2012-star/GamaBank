@@ -15,6 +15,8 @@ export default function AdminPanel() {
   const [students, setStudents] = useState([]);
   const [benefits, setBenefits] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [bankBalance, setBankBalance] = useState(0);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({});
 
@@ -39,6 +41,12 @@ export default function AdminPanel() {
       } else if (activeTab === "activities") {
         const res = await axios.get(`${API}/activities`);
         setActivities(res.data);
+      } else if (activeTab === "transactions") {
+        const res = await axios.get(`${API}/transactions`);
+        setTransactions(res.data);
+      } else if (activeTab === "bank") {
+        const res = await axios.get(`${API}/bank`);
+        setBankBalance(res.data.balance);
       }
     } catch (error) {
       toast.error("Erro ao carregar dados");
@@ -47,7 +55,10 @@ export default function AdminPanel() {
 
   const handleSave = async () => {
     try {
-      if (editing?.id) {
+      if (activeTab === "bank") {
+        await axios.put(`${API}/admin/bank`, { balance: formData.balance });
+        toast.success("Banco atualizado!");
+      } else if (editing?.id) {
         await axios.put(`${API}/admin/${activeTab}/${editing.id}`, formData);
         toast.success("Atualizado!");
       } else {
@@ -97,8 +108,8 @@ export default function AdminPanel() {
             Painel Administrativo
           </h1>
 
-          <div className="flex gap-2 mb-6">
-            {["students", "benefits", "activities"].map((tab) => (
+          <div className="flex gap-2 mb-6 flex-wrap">
+            {["students", "benefits", "activities", "bank", "transactions"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -108,7 +119,7 @@ export default function AdminPanel() {
                     : "bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8]"
                 }`}
               >
-                {tab === "students" ? "Alunos" : tab === "benefits" ? "Benefícios" : "Atividades"}
+                {tab === "students" ? "Alunos" : tab === "benefits" ? "Benefícios" : tab === "activities" ? "Atividades" : tab === "bank" ? "Banco" : "Extratos"}
               </button>
             ))}
           </div>
@@ -116,11 +127,18 @@ export default function AdminPanel() {
           <div className="neo-card p-6 mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold" style={{ color: "#6BB4E8" }}>
-                {activeTab === "students" ? "Alunos" : activeTab === "benefits" ? "Benefícios" : "Atividades"}
+                {activeTab === "students" ? "Alunos" : activeTab === "benefits" ? "Benefícios" : activeTab === "activities" ? "Atividades" : activeTab === "bank" ? "Banco" : "Extratos"}
               </h2>
-              <Button onClick={startNew} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
-                <Plus size={20} weight="bold" /> Adicionar
-              </Button>
+              {activeTab !== "transactions" && activeTab !== "bank" && (
+                <Button onClick={startNew} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
+                  <Plus size={20} weight="bold" /> Adicionar
+                </Button>
+              )}
+              {activeTab === "bank" && (
+                <Button onClick={() => { setEditing({ id: null }); setFormData({ balance: bankBalance }); }} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
+                  <Pencil size={20} weight="bold" /> Editar Saldo
+                </Button>
+              )}
             </div>
 
             {activeTab === "students" && (
@@ -187,6 +205,42 @@ export default function AdminPanel() {
                 ))}
               </div>
             )}
+
+            {activeTab === "bank" && (
+              <div className="text-center py-8">
+                <p className="text-[#4A90C8] mb-4">Saldo do Banco de Gamas</p>
+                <p className="text-6xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                  {bankBalance}
+                </p>
+              </div>
+            )}
+
+            {activeTab === "transactions" && (
+              <div className="space-y-2">
+                {transactions.map((t) => (
+                  <div key={t.id} className="flex justify-between items-center p-4 bg-[#E8F4FA] rounded-lg border-2 border-[#6BB4E8]">
+                    <div className="flex-1">
+                      <p className="font-bold text-[#4A90C8]">{t.student_name}</p>
+                      <p className="text-sm text-[#4A90C8]">{t.description}</p>
+                      <p className="text-xs text-[#4A90C8]">{new Date(t.timestamp).toLocaleString('pt-BR')}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <p className={`text-2xl font-black ${t.type === 'add' ? 'text-green-600' : 'text-red-600'}`}>
+                        {t.type === 'add' ? '+' : '-'}{t.amount}
+                      </p>
+                      <div className="flex gap-2">
+                        <button onClick={() => startEdit(t)} className="p-2 bg-[#6BB4E8] text-white rounded-lg">
+                          <Pencil size={18} />
+                        </button>
+                        <button onClick={() => handleDelete(t.id)} className="p-2 bg-red-500 text-white rounded-lg">
+                          <Trash size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {editing && (
@@ -202,6 +256,42 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="space-y-3">
+                  {activeTab === "bank" && (
+                    <Input
+                      type="number"
+                      placeholder="Saldo do Banco"
+                      value={formData.balance || 0}
+                      onChange={(e) => setFormData({ balance: parseInt(e.target.value) })}
+                      className="border-2 border-[#6BB4E8]"
+                    />
+                  )}
+
+                  {activeTab === "transactions" && (
+                    <>
+                      <Input
+                        type="number"
+                        placeholder="Quantidade"
+                        value={formData.amount || 0}
+                        onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) })}
+                        className="border-2 border-[#6BB4E8]"
+                      />
+                      <Input
+                        placeholder="Descrição"
+                        value={formData.description || ""}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        className="border-2 border-[#6BB4E8]"
+                      />
+                      <select
+                        value={formData.type || "add"}
+                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                        className="w-full p-2 border-2 border-[#6BB4E8] rounded-lg"
+                      >
+                        <option value="add">Adicionar</option>
+                        <option value="subtract">Remover</option>
+                      </select>
+                    </>
+                  )}
+
                   {activeTab === "students" && (
                     <>
                       <Input
