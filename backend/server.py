@@ -38,6 +38,7 @@ class Student(BaseModel):
     name: str
     class_year: str
     balance: int = 0
+    password: str = "1234"
 
 
 class StudentWithTransactions(BaseModel):
@@ -81,6 +82,21 @@ class BankBalance(BaseModel):
     balance: int
 
 
+class ClassRoom(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    year: str
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+
+ADMIN_PASSWORD = "Rodrigo123"
+
+
 @api_router.get("/")
 async def root():
     return {"message": "Gama Bank API"}
@@ -88,9 +104,105 @@ async def root():
 
 @api_router.post("/admin/verify")
 async def verify_admin(data: AdminVerify):
-    if data.password == "Rodrigo123":
+    global ADMIN_PASSWORD
+    if data.password == ADMIN_PASSWORD:
         return {"success": True, "message": "Admin autenticado"}
     raise HTTPException(status_code=401, detail="Senha incorreta")
+
+
+@api_router.post("/admin/change-password")
+async def change_password(data: PasswordChange):
+    global ADMIN_PASSWORD
+    if data.current_password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Senha atual incorreta")
+    ADMIN_PASSWORD = data.new_password
+    return {"success": True, "message": "Senha alterada"}
+
+
+@api_router.post("/student/login")
+async def student_login(data: dict):
+    student = await db.students.find_one({
+        "id": data["student_id"],
+        "password": data["password"]
+    }, {"_id": 0})
+    if not student:
+        raise HTTPException(status_code=401, detail="Senha incorreta")
+    return {"success": True, "student": student}
+
+
+@api_router.put("/admin/students/{student_id}/password")
+async def update_student_password(student_id: str, data: dict):
+    await db.students.update_one({"id": student_id}, {"$set": {"password": data["password"]}})
+    return {"success": True}
+
+
+@api_router.post("/student/transfer")
+async def student_transfer(data: dict):
+    from_student = await db.students.find_one({"id": data["from_student_id"]}, {"_id": 0})
+    to_student = await db.students.find_one({"id": data["to_student_id"]}, {"_id": 0})
+    
+    if not from_student or not to_student:
+        raise HTTPException(status_code=404, detail="Aluno não encontrado")
+    
+    amount = data["amount"]
+    if from_student["balance"] < amount:
+        raise HTTPException(status_code=400, detail="Saldo insuficiente")
+    
+    await db.students.update_one({"id": data["from_student_id"]}, {"$inc": {"balance": -amount}})
+    await db.students.update_one({"id": data["to_student_id"]}, {"$inc": {"balance": amount}})
+    
+    trans_from = Transaction(
+        student_id=data["from_student_id"],
+        amount=amount,
+        description=f"Transferência para {to_student['name']}: {data['description']}",
+        type="subtract"
+    )
+    trans_to = Transaction(
+        student_id=data["to_student_id"],
+        amount=amount,
+        description=f"Transferência de {from_student['name']}: {data['description']}",
+        type="add"
+    )
+    
+    await db.transactions.insert_one(trans_from.model_dump())
+    await db.transactions.insert_one(trans_to.model_dump())
+    
+    return {"success": True}
+
+
+@api_router.get("/classes")
+async def get_classes():
+    classes = await db.classes.find({}, {"_id": 0}).to_list(1000)
+    if not classes:
+        default = [
+            {"id": str(uuid.uuid4()), "name": "8º Ano", "year": "8"},
+            {"id": str(uuid.uuid4()), "name": "9º Ano", "year": "9"},
+            {"id": str(uuid.uuid4()), "name": "1º Colegial", "year": "1"}
+        ]
+        await db.classes.insert_many(default)
+        return default
+    return classes
+
+
+@api_router.post("/admin/classes")
+async def create_class(data: dict):
+    class_obj = ClassRoom(**data)
+    await db.classes.insert_one(class_obj.model_dump())
+    return {"success": True}
+
+
+@api_router.put("/admin/classes/{class_id}")
+async def update_class(class_id: str, data: dict):
+    await db.classes.update_one({"id": class_id}, {"$set": data})
+    return {"success": True}
+
+
+@api_router.delete("/admin/classes/{class_id}")
+async def delete_class(class_id: str):
+    result = await db.classes.delete_one({"id": class_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Turma não encontrada")
+    return {"success": True}
 
 
 @api_router.get("/students", response_model=List[Student])
@@ -289,19 +401,19 @@ async def seed_database():
     await db.bank.insert_one({"balance": 10000})
     
     students = [
-        {"id": str(uuid.uuid4()), "name": "Guilherme", "class_year": "8", "balance": 45},
-        {"id": str(uuid.uuid4()), "name": "Chade", "class_year": "8", "balance": 62},
-        {"id": str(uuid.uuid4()), "name": "Heitor", "class_year": "8", "balance": 38},
-        {"id": str(uuid.uuid4()), "name": "Pietro", "class_year": "9", "balance": 78},
-        {"id": str(uuid.uuid4()), "name": "Maria Eduarda", "class_year": "9", "balance": 95},
-        {"id": str(uuid.uuid4()), "name": "Izabella", "class_year": "9", "balance": 83},
-        {"id": str(uuid.uuid4()), "name": "Livia", "class_year": "9", "balance": 70},
-        {"id": str(uuid.uuid4()), "name": "Hetore", "class_year": "9", "balance": 56},
-        {"id": str(uuid.uuid4()), "name": "Paula", "class_year": "9", "balance": 88},
-        {"id": str(uuid.uuid4()), "name": "Maria Helena", "class_year": "9", "balance": 92},
-        {"id": str(uuid.uuid4()), "name": "Ana", "class_year": "1", "balance": 110},
-        {"id": str(uuid.uuid4()), "name": "Anne", "class_year": "1", "balance": 105},
-        {"id": str(uuid.uuid4()), "name": "Otavio", "class_year": "1", "balance": 98}
+        {"id": str(uuid.uuid4()), "name": "Guilherme", "class_year": "8", "balance": 45, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Chade", "class_year": "8", "balance": 62, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Heitor", "class_year": "8", "balance": 38, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Pietro", "class_year": "9", "balance": 78, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Maria Eduarda", "class_year": "9", "balance": 95, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Izabella", "class_year": "9", "balance": 83, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Livia", "class_year": "9", "balance": 70, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Hetore", "class_year": "9", "balance": 56, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Paula", "class_year": "9", "balance": 88, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Maria Helena", "class_year": "9", "balance": 92, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Ana", "class_year": "1", "balance": 110, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Anne", "class_year": "1", "balance": 105, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Otavio", "class_year": "1", "balance": 98, "password": "1234"}
     ]
     
     await db.students.insert_many(students)

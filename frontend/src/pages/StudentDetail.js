@@ -21,18 +21,50 @@ export default function StudentDetail() {
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [transferClass, setTransferClass] = useState("");
+  const [transferStudent, setTransferStudent] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
+  const [transferDesc, setTransferDesc] = useState("");
+  const [classes, setClasses] = useState([]);
+  const [transferStudents, setTransferStudents] = useState([]);
 
   useEffect(() => {
     loadStudent();
+    loadClasses();
   }, [studentId]);
 
   useEffect(() => {
     const adminStatus = localStorage.getItem("isAdmin") === "true";
+    const loggedStudent = JSON.parse(localStorage.getItem("student") || "null");
     setIsAdmin(adminStatus);
-  }, []);
+    setIsStudent(loggedStudent?.id === studentId);
+  }, [studentId]);
+
+  useEffect(() => {
+    if (transferClass) loadTransferStudents();
+  }, [transferClass]);
+
+  const loadClasses = async () => {
+    try {
+      const res = await axios.get(`${API}/classes`);
+      setClasses(res.data);
+    } catch (error) {
+      console.error("Erro ao carregar turmas");
+    }
+  };
+
+  const loadTransferStudents = async () => {
+    try {
+      const res = await axios.get(`${API}/students/class/${transferClass}`);
+      setTransferStudents(res.data.filter(s => s.id !== studentId));
+    } catch (error) {
+      console.error("Erro ao carregar alunos");
+    }
+  };
 
   const loadStudent = async () => {
     setLoading(true);
@@ -71,6 +103,32 @@ export default function StudentDetail() {
       loadStudent();
     } catch (error) {
       toast.error(error.response?.data?.detail || "Erro ao processar operação");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleTransfer = async () => {
+    if (!transferStudent || !transferAmount || !transferDesc) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+    setProcessing(true);
+    try {
+      await axios.post(`${API}/student/transfer`, {
+        from_student_id: studentId,
+        to_student_id: transferStudent,
+        amount: parseInt(transferAmount),
+        description: transferDesc
+      });
+      toast.success("Transferência realizada!");
+      setTransferClass("");
+      setTransferStudent("");
+      setTransferAmount("");
+      setTransferDesc("");
+      loadStudent();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Erro ao transferir");
     } finally {
       setProcessing(false);
     }
@@ -130,6 +188,29 @@ export default function StudentDetail() {
               </div>
             </div>
           </div>
+
+          {isStudent && (
+            <div className="neo-card p-6 bg-green-50 border-[#16A34A]">
+              <h3 className="text-xl font-black tracking-tighter mb-4 text-green-700" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                Transferir Gamas
+              </h3>
+              <div className="space-y-3">
+                <select value={transferClass} onChange={(e) => setTransferClass(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg">
+                  <option value="">Selecione a turma</option>
+                  {classes.map(c => <option key={c.id} value={c.year}>{c.name}</option>)}
+                </select>
+                {transferClass && (
+                  <select value={transferStudent} onChange={(e) => setTransferStudent(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg">
+                    <option value="">Selecione o aluno</option>
+                    {transferStudents.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                )}
+                <Input type="number" placeholder="Quantidade" value={transferAmount} onChange={(e) => setTransferAmount(e.target.value)} className="border-2 border-green-500" />
+                <Input placeholder="Descrição" value={transferDesc} onChange={(e) => setTransferDesc(e.target.value)} className="border-2 border-green-500" />
+                <Button onClick={handleTransfer} disabled={processing} className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg">Transferir</Button>
+              </div>
+            </div>
+          )}
 
           {isAdmin && (
             <div className="neo-card p-6 bg-[#6BB4E8] border-[#6BB4E8]" data-testid="admin-panel">

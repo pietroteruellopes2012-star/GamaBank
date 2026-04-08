@@ -16,9 +16,11 @@ export default function AdminPanel() {
   const [benefits, setBenefits] = useState([]);
   const [activities, setActivities] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [bankBalance, setBankBalance] = useState(0);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({});
+  const [passwordForm, setPasswordForm] = useState({ current: "", new: "" });
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -47,6 +49,9 @@ export default function AdminPanel() {
       } else if (activeTab === "bank") {
         const res = await axios.get(`${API}/bank`);
         setBankBalance(res.data.balance);
+      } else if (activeTab === "rooms") {
+        const res = await axios.get(`${API}/classes`);
+        setClasses(res.data);
       }
     } catch (error) {
       toast.error("Erro ao carregar dados");
@@ -58,6 +63,14 @@ export default function AdminPanel() {
       if (activeTab === "bank") {
         await axios.put(`${API}/admin/bank`, { balance: formData.balance });
         toast.success("Banco atualizado!");
+      } else if (activeTab === "rooms") {
+        if (editing?.id) {
+          await axios.put(`${API}/admin/classes/${editing.id}`, formData);
+          toast.success("Turma atualizada!");
+        } else {
+          await axios.post(`${API}/admin/classes`, formData);
+          toast.success("Turma criada!");
+        }
       } else if (editing?.id) {
         await axios.put(`${API}/admin/${activeTab}/${editing.id}`, formData);
         toast.success("Atualizado!");
@@ -76,7 +89,8 @@ export default function AdminPanel() {
   const handleDelete = async (id) => {
     if (!confirm("Confirma exclusão?")) return;
     try {
-      await axios.delete(`${API}/admin/${activeTab}/${id}`);
+      const endpoint = activeTab === "rooms" ? "classes" : activeTab;
+      await axios.delete(`${API}/admin/${endpoint}/${id}`);
       toast.success("Excluído!");
       loadData();
     } catch (error) {
@@ -96,8 +110,29 @@ export default function AdminPanel() {
         ? { name: "", class_year: "8", balance: 0 }
         : activeTab === "benefits"
         ? { name: "", description: "", cost: 0, image_url: "" }
-        : { name: "", description: "", reward: 0, image_url: "" }
+        : activeTab === "activities"
+        ? { name: "", description: "", reward: 0, image_url: "" }
+        : activeTab === "rooms"
+        ? { name: "", year: "" }
+        : {}
     );
+  };
+
+  const changePassword = async () => {
+    if (!passwordForm.current || !passwordForm.new) {
+      toast.error("Preencha todos os campos");
+      return;
+    }
+    try {
+      await axios.post(`${API}/admin/change-password`, {
+        current_password: passwordForm.current,
+        new_password: passwordForm.new,
+      });
+      toast.success("Senha alterada!");
+      setPasswordForm({ current: "", new: "" });
+    } catch (error) {
+      toast.error("Senha atual incorreta!");
+    }
   };
 
   return (
@@ -109,17 +144,17 @@ export default function AdminPanel() {
           </h1>
 
           <div className="flex gap-2 mb-6 flex-wrap">
-            {["students", "benefits", "activities", "bank", "transactions"].map((tab) => (
+            {["students", "benefits", "activities", "bank", "rooms", "transactions", "settings"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-3 rounded-full font-bold border-2 border-[#6BB4E8] transition-all ${
+                className={`px-4 py-2 rounded-full font-bold border-2 border-[#6BB4E8] transition-all text-sm ${
                   activeTab === tab
                     ? "bg-[#6BB4E8] text-white shadow-[3px_3px_0_#4A90C8]"
                     : "bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8]"
                 }`}
               >
-                {tab === "students" ? "Alunos" : tab === "benefits" ? "Benefícios" : tab === "activities" ? "Atividades" : tab === "bank" ? "Banco" : "Extratos"}
+                {tab === "students" ? "Alunos" : tab === "benefits" ? "Benefícios" : tab === "activities" ? "Atividades" : tab === "bank" ? "Banco" : tab === "rooms" ? "Turmas" : tab === "transactions" ? "Extratos" : "Senha"}
               </button>
             ))}
           </div>
@@ -127,9 +162,9 @@ export default function AdminPanel() {
           <div className="neo-card p-6 mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold" style={{ color: "#6BB4E8" }}>
-                {activeTab === "students" ? "Alunos" : activeTab === "benefits" ? "Benefícios" : activeTab === "activities" ? "Atividades" : activeTab === "bank" ? "Banco" : "Extratos"}
+                {activeTab === "students" ? "Alunos" : activeTab === "benefits" ? "Benefícios" : activeTab === "activities" ? "Atividades" : activeTab === "bank" ? "Banco" : activeTab === "rooms" ? "Turmas" : activeTab === "transactions" ? "Extratos" : "Alterar Senha"}
               </h2>
-              {activeTab !== "transactions" && activeTab !== "bank" && (
+              {!["transactions", "bank", "settings"].includes(activeTab) && (
                 <Button onClick={startNew} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
                   <Plus size={20} weight="bold" /> Adicionar
                 </Button>
@@ -241,6 +276,81 @@ export default function AdminPanel() {
                 ))}
               </div>
             )}
+
+            {activeTab === "rooms" && (
+              <div className="space-y-2">
+                {classes.map((c) => (
+                  <div key={c.id} className="flex justify-between items-center p-4 bg-[#E8F4FA] rounded-lg border-2 border-[#6BB4E8]">
+                    <div>
+                      <p className="font-bold text-[#4A90C8]">{c.name}</p>
+                      <p className="text-sm text-[#4A90C8]">Ano: {c.year}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={() => startEdit(c)} className="p-2 bg-[#6BB4E8] text-white rounded-lg">
+                        <Pencil size={18} />
+                      </button>
+                      <button onClick={() => handleDelete(c.id)} className="p-2 bg-red-500 text-white rounded-lg">
+                        <Trash size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === "settings" && (
+              <div className="max-w-2xl mx-auto space-y-8">
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-[#6BB4E8]">Alterar Senha do Admin</h3>
+                  <p className="text-[#4A90C8] mb-4">Digite a senha atual para criar uma nova</p>
+                  <Input
+                    type="password"
+                    placeholder="Senha Atual"
+                    value={passwordForm.current}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, current: e.target.value })}
+                    className="border-2 border-[#6BB4E8]"
+                  />
+                  <Input
+                    type="password"
+                    placeholder="Nova Senha"
+                    value={passwordForm.new}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, new: e.target.value })}
+                    className="border-2 border-[#6BB4E8]"
+                  />
+                  <Button onClick={changePassword} className="w-full neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
+                    Alterar Senha Admin
+                  </Button>
+                </div>
+
+                <div className="border-t-2 border-[#6BB4E8] pt-8 space-y-4">
+                  <h3 className="text-xl font-bold text-[#6BB4E8]">Gerenciar Senhas dos Alunos</h3>
+                  <p className="text-[#4A90C8] mb-4">Clique em um aluno para editar sua senha</p>
+                  <div className="space-y-2">
+                    {students.map((s) => (
+                      <div key={s.id} className="flex justify-between items-center p-4 bg-[#E8F4FA] rounded-lg border-2 border-[#6BB4E8]">
+                        <div>
+                          <p className="font-bold text-[#4A90C8]">{s.name}</p>
+                          <p className="text-sm text-[#4A90C8]">{s.class_year === "8" ? "8º Ano" : s.class_year === "9" ? "9º Ano" : "1º Colegial"}</p>
+                        </div>
+                        <Button
+                          onClick={() => {
+                            const newPass = prompt(`Nova senha para ${s.name}:`, s.password || "1234");
+                            if (newPass) {
+                              axios.put(`${API}/admin/students/${s.id}/password`, { password: newPass })
+                                .then(() => { toast.success("Senha atualizada!"); loadData(); })
+                                .catch(() => toast.error("Erro ao atualizar senha"));
+                            }
+                          }}
+                          className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg text-sm px-4 py-2"
+                        >
+                          <Pencil size={16} weight="bold" className="mr-2" /> Editar Senha
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {editing && (
@@ -314,6 +424,23 @@ export default function AdminPanel() {
                         placeholder="Saldo"
                         value={formData.balance || 0}
                         onChange={(e) => setFormData({ ...formData, balance: parseInt(e.target.value) })}
+                        className="border-2 border-[#6BB4E8]"
+                      />
+                    </>
+                  )}
+
+                  {activeTab === "rooms" && (
+                    <>
+                      <Input
+                        placeholder="Nome da Turma"
+                        value={formData.name || ""}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="border-2 border-[#6BB4E8]"
+                      />
+                      <Input
+                        placeholder="Ano (ex: 8, 9, 1)"
+                        value={formData.year || ""}
+                        onChange={(e) => setFormData({ ...formData, year: e.target.value })}
                         className="border-2 border-[#6BB4E8]"
                       />
                     </>
