@@ -220,6 +220,18 @@ export default function Home() {
                 <span className="font-bold text-xl">•</span>
                 <span>Entregue trabalhos sempre no prazo</span>
               </li>
+              <li className="flex items-start gap-3">
+                <span className="font-bold text-xl">•</span>
+                <span>Traga sua apostila completa todos os dias</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="font-bold text-xl">•</span>
+                <span>Faça resumos criativos das aulas</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="font-bold text-xl">•</span>
+                <span>Transfira gamas entre amigos de forma responsável</span>
+              </li>
             </ul>
           </motion.div>
         </div>
