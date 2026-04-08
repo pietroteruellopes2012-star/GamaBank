@@ -129,13 +129,23 @@ export default function AdminPanel() {
 
   const generateImageFromName = (name) => {
     if (!name || name.trim() === "") return "";
-    const keywords = name.toLowerCase()
-      .replace(/[^\w\s]/g, '')
-      .split(' ')
-      .filter(w => w.length > 2)
-      .slice(0, 3)
-      .join(',');
-    return `https://source.unsplash.com/400x225/?${keywords || 'education'}`;
+    const n = name.toLowerCase();
+    const imageMap = {
+      'prova|teste|questão|exame': 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=400',
+      'lugar|sala|sentar|cadeira': 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400',
+      'lição|casa|dever|tarefa': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400',
+      'trabalho|grupo|equipe|apresentar': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400',
+      'atraso|tempo|relógio|chegar': 'https://images.unsplash.com/photo-1501139083538-0139583c060f?w=400',
+      'redação|escrever|texto|tema': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400',
+      'ler|livro|apostila|leitura': 'https://images.unsplash.com/photo-1645891913640-9a75931c6235?w=400',
+      'participar|aula|pergunta|discussão': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400',
+      'ajudar|colega|dúvida|ensinar': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400',
+      'resumo|criativo|conteúdo': 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400'
+    };
+    for (const [keywords, url] of Object.entries(imageMap)) {
+      if (keywords.split('|').some(k => n.includes(k))) return url;
+    }
+    return 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400';
   };
 
   const changePassword = async () => {
