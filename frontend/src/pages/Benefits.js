@@ -55,6 +55,9 @@ export default function Benefits() {
                   src={benefit.image_url}
                   alt={benefit.name}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=400';
+                  }}
                 />
               </div>
               <div className="p-6">

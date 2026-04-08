@@ -55,6 +55,9 @@ export default function Activities() {
                   src={activity.image_url}
                   alt={activity.name}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400';
+                  }}
                 />
               </div>
               <div className="p-6">

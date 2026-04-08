@@ -489,12 +489,29 @@ export default function AdminPanel() {
                         }
                         className="border-2 border-[#6BB4E8]"
                       />
-                      <Input
-                        placeholder="URL da Imagem"
-                        value={formData.image_url || ""}
-                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                        className="border-2 border-[#6BB4E8]"
-                      />
+                      <div>
+                        <Input
+                          placeholder="URL da Imagem"
+                          value={formData.image_url || ""}
+                          onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                          className="border-2 border-[#6BB4E8]"
+                        />
+                        {formData.image_url && (
+                          <div className="mt-3 border-2 border-[#6BB4E8] rounded-lg overflow-hidden">
+                            <p className="text-xs text-[#4A90C8] p-2 bg-[#E8F4FA]">Preview:</p>
+                            <div className="aspect-video bg-gray-100">
+                              <img
+                                src={formData.image_url}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.src = 'https://via.placeholder.com/400x225?text=Imagem+Invalida';
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </>
                   )}
 
