@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Lock, List, X, User } from "@phosphor-icons/react";
 import AdminModal from "@/components/AdminModal";
 import StudentLoginModal from "@/components/StudentLoginModal";
@@ -8,6 +8,11 @@ export default function Layout() {
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("student");
+  }, []);
 
   return (
     <div className="min-h-screen relative" style={{ zIndex: 2 }}>

@@ -136,7 +136,7 @@ export default function StudentDetail() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
         <p className="text-center text-[#4B5563]">Carregando...</p>
       </div>
     );
@@ -144,14 +144,14 @@ export default function StudentDetail() {
 
   if (!student) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
         <p className="text-center text-[#4B5563]">Aluno não encontrado</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -166,22 +166,22 @@ export default function StudentDetail() {
           Voltar para Turmas
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2 neo-card p-8">
-            <div className="flex items-start justify-between mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="lg:col-span-2 neo-card p-4 sm:p-8">
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-6">
               <div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tighter mb-2" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter mb-2" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                   {student.name}
                 </h1>
-                <p className="text-lg text-[#4B5563] font-semibold">
+                <p className="text-base sm:text-lg text-[#4B5563] font-semibold">
                   {classNames[student.class_year]}
                 </p>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right w-full sm:w-auto">
                 <p className="text-sm text-[#4B5563] mb-1">Saldo Atual</p>
                 <div className="flex items-center gap-2">
-                  <Coins size={32} weight="bold" className="text-[#6BB4E8]" />
-                  <span className="text-5xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                  <Coins size={28} weight="bold" className="text-[#6BB4E8]" />
+                  <span className="text-4xl sm:text-5xl font-black gama-number" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                     {student.balance}
                   </span>
                 </div>
@@ -190,31 +190,31 @@ export default function StudentDetail() {
           </div>
 
           {isStudent && (
-            <div className="neo-card p-6 bg-green-50 border-[#16A34A]">
-              <h3 className="text-xl font-black tracking-tighter mb-4 text-green-700" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+            <div className="neo-card p-4 sm:p-6 bg-green-50 border-[#16A34A]">
+              <h3 className="text-lg sm:text-xl font-black tracking-tighter mb-4 text-green-700" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                 Transferir Gamas
               </h3>
               <div className="space-y-3">
-                <select value={transferClass} onChange={(e) => setTransferClass(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg">
+                <select value={transferClass} onChange={(e) => setTransferClass(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg text-sm">
                   <option value="">Selecione a turma</option>
                   {classes.map(c => <option key={c.id} value={c.year}>{c.name}</option>)}
                 </select>
                 {transferClass && (
-                  <select value={transferStudent} onChange={(e) => setTransferStudent(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg">
+                  <select value={transferStudent} onChange={(e) => setTransferStudent(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg text-sm">
                     <option value="">Selecione o aluno</option>
                     {transferStudents.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
                 )}
                 <Input type="number" placeholder="Quantidade" value={transferAmount} onChange={(e) => setTransferAmount(e.target.value)} className="border-2 border-green-500" />
                 <Input placeholder="Descrição" value={transferDesc} onChange={(e) => setTransferDesc(e.target.value)} className="border-2 border-green-500" />
-                <Button onClick={handleTransfer} disabled={processing} className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg">Transferir</Button>
+                <Button onClick={handleTransfer} disabled={processing} className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm">Transferir</Button>
               </div>
             </div>
           )}
 
           {isAdmin && (
-            <div className="neo-card p-6 bg-[#6BB4E8] border-[#6BB4E8]" data-testid="admin-panel">
-              <h3 className="text-xl font-black tracking-tighter mb-4 text-white" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+            <div className="neo-card p-4 sm:p-6 bg-[#6BB4E8] border-[#6BB4E8]" data-testid="admin-panel">
+              <h3 className="text-lg sm:text-xl font-black tracking-tighter mb-4 text-white" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                 Painel Admin
               </h3>
               <div className="space-y-3">
@@ -224,7 +224,7 @@ export default function StudentDetail() {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   data-testid="gama-amount-input"
-                  className="bg-white border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="bg-white border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
                 />
                 <Input
                   type="text"
@@ -232,25 +232,25 @@ export default function StudentDetail() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   data-testid="gama-description-input"
-                  className="bg-white border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="bg-white border-2 border-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     onClick={() => handleGamaOperation("add")}
                     disabled={processing}
                     data-testid="add-gamas-button"
-                    className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg flex items-center gap-2"
+                    className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg flex items-center gap-2 text-sm"
                   >
-                    <Plus size={18} weight="bold" />
+                    <Plus size={16} weight="bold" />
                     Adicionar
                   </Button>
                   <Button
                     onClick={() => handleGamaOperation("subtract")}
                     disabled={processing}
                     data-testid="subtract-gamas-button"
-                    className="neo-button bg-white hover:bg-white text-[#6BB4E8] rounded-lg flex items-center gap-2"
+                    className="neo-button bg-white hover:bg-white text-[#6BB4E8] rounded-lg flex items-center gap-2 text-sm"
                   >
-                    <Minus size={18} weight="bold" />
+                    <Minus size={16} weight="bold" />
                     Remover
                   </Button>
                 </div>
@@ -259,7 +259,7 @@ export default function StudentDetail() {
           )}
         </div>
 
-        <div className="neo-card p-8">
+        <div className="neo-card p-4 sm:p-8">
           <h2 className="text-3xl font-black tracking-tighter mb-6" style={{ fontFamily: 'Unbounded, sans-serif' }}>
             Extrato de Transações
           </h2>

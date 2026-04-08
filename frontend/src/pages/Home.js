@@ -55,14 +55,14 @@ export default function Home() {
   const topStudent = students.length > 0 ? students.reduce((max, student) => student.balance > max.balance ? student : max, students[0]) : null;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Unbounded, sans-serif', color: '#6BB4E8' }}>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Unbounded, sans-serif', color: '#6BB4E8' }}>
             Sistema de <span className="text-[#4A90C8]">GAMAS</span>
           </h1>
           <p className="text-lg md:text-xl text-[#4A90C8] max-w-2xl mx-auto">

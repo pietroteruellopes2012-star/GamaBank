@@ -136,19 +136,19 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-4xl font-black mb-8" style={{ fontFamily: "Unbounded, sans-serif", color: "#6BB4E8" }}>
+          <h1 className="text-3xl sm:text-4xl font-black mb-6 sm:mb-8" style={{ fontFamily: "Unbounded, sans-serif", color: "#6BB4E8" }}>
             Painel Administrativo
           </h1>
 
-          <div className="flex gap-2 mb-6 flex-wrap">
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
             {["students", "benefits", "activities", "bank", "rooms", "transactions", "settings"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full font-bold border-2 border-[#6BB4E8] transition-all text-sm ${
+                className={`px-3 sm:px-4 py-2 rounded-full font-bold border-2 border-[#6BB4E8] transition-all text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === tab
                     ? "bg-[#6BB4E8] text-white shadow-[3px_3px_0_#4A90C8]"
                     : "bg-white text-[#4A90C8] shadow-[2px_2px_0_#6BB4E8]"
@@ -159,18 +159,18 @@ export default function AdminPanel() {
             ))}
           </div>
 
-          <div className="neo-card p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold" style={{ color: "#6BB4E8" }}>
+          <div className="neo-card p-4 sm:p-6 mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold" style={{ color: "#6BB4E8" }}>
                 {activeTab === "students" ? "Alunos" : activeTab === "benefits" ? "Benefícios" : activeTab === "activities" ? "Atividades" : activeTab === "bank" ? "Banco" : activeTab === "rooms" ? "Turmas" : activeTab === "transactions" ? "Extratos" : "Alterar Senha"}
               </h2>
               {!["transactions", "bank", "settings"].includes(activeTab) && (
-                <Button onClick={startNew} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
+                <Button onClick={startNew} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg w-full sm:w-auto">
                   <Plus size={20} weight="bold" /> Adicionar
                 </Button>
               )}
               {activeTab === "bank" && (
-                <Button onClick={() => { setEditing({ id: null }); setFormData({ balance: bankBalance }); }} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg">
+                <Button onClick={() => { setEditing({ id: null }); setFormData({ balance: bankBalance }); }} className="neo-button bg-[#6BB4E8] hover:bg-[#6BB4E8] text-white rounded-lg w-full sm:w-auto">
                   <Pencil size={20} weight="bold" /> Editar Saldo
                 </Button>
               )}
