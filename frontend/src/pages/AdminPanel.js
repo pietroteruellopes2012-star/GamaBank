@@ -17,6 +17,7 @@ export default function AdminPanel() {
   const [activities, setActivities] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [classes, setClasses] = useState([]);
+  const [allClasses, setAllClasses] = useState([]);
   const [bankBalance, setBankBalance] = useState(0);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({});
@@ -30,7 +31,17 @@ export default function AdminPanel() {
       return;
     }
     loadData();
+    loadAllClasses();
   }, [activeTab]);
+
+  const loadAllClasses = async () => {
+    try {
+      const res = await axios.get(`${API}/classes`);
+      setAllClasses(res.data);
+    } catch (error) {
+      console.error("Erro ao carregar turmas");
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -105,17 +116,15 @@ export default function AdminPanel() {
 
   const startNew = () => {
     setEditing({ id: null });
-    setFormData(
-      activeTab === "students"
-        ? { name: "", class_year: "8", balance: 0 }
-        : activeTab === "benefits"
-        ? { name: "", description: "", cost: 0, image_url: "" }
-        : activeTab === "activities"
-        ? { name: "", description: "", reward: 0, image_url: "" }
-        : activeTab === "rooms"
-        ? { name: "", year: "" }
-        : {}
-    );
+    if (activeTab === "students") {
+      setFormData({ name: "", class_year: allClasses[0]?.year || "", balance: 0 });
+    } else if (activeTab === "benefits") {
+      setFormData({ name: "", description: "", cost: 0, image_url: "" });
+    } else if (activeTab === "activities") {
+      setFormData({ name: "", description: "", reward: 0, image_url: "" });
+    } else if (activeTab === "rooms") {
+      setFormData({ name: "", year: "" });
+    }
   };
 
   const changePassword = async () => {
@@ -411,13 +420,14 @@ export default function AdminPanel() {
                         className="border-2 border-[#6BB4E8]"
                       />
                       <select
-                        value={formData.class_year || "8"}
+                        value={formData.class_year || ""}
                         onChange={(e) => setFormData({ ...formData, class_year: e.target.value })}
                         className="w-full p-2 border-2 border-[#6BB4E8] rounded-lg"
                       >
-                        <option value="8">8º Ano</option>
-                        <option value="9">9º Ano</option>
-                        <option value="1">1º Colegial</option>
+                        <option value="">Selecione a turma</option>
+                        {allClasses.map((c) => (
+                          <option key={c.id} value={c.year}>{c.name}</option>
+                        ))}
                       </select>
                       <Input
                         type="number"

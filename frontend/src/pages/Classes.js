@@ -6,35 +6,34 @@ import axios from "axios";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const classNames = {
-  "8": "8º Ano",
-  "9": "9º Ano",
-  "1": "1º Colegial"
-};
-
 export default function Classes() {
-  const [selectedClass, setSelectedClass] = useState("8");
+  const [selectedClass, setSelectedClass] = useState("");
   const [students, setStudents] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadStudents();
-    
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        loadStudents();
-      }
-    };
-    
-    window.addEventListener('focus', loadStudents);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      window.removeEventListener('focus', loadStudents);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
+    loadClasses();
+  }, []);
+
+  useEffect(() => {
+    if (selectedClass) loadStudents();
   }, [selectedClass]);
+
+  const loadClasses = async () => {
+    try {
+      const res = await axios.get(`${API}/classes`);
+      setClasses(res.data);
+      if (res.data.length > 0) {
+        setSelectedClass(res.data[0].year);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar turmas:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadStudents = async () => {
     setLoading(true);
@@ -64,20 +63,20 @@ export default function Classes() {
           </p>
         </div>
 
-        <div className="flex justify-center gap-4 mb-12">
-          {Object.entries(classNames).map(([key, name]) => (
+        <div className="flex justify-center gap-4 mb-12 flex-wrap">
+          {classes.map((c) => (
             <button
-              key={key}
-              onClick={() => setSelectedClass(key)}
-              data-testid={`class-tab-${key}`}
+              key={c.id}
+              onClick={() => setSelectedClass(c.year)}
+              data-testid={`class-tab-${c.year}`}
               className={`px-6 py-3 rounded-full font-bold text-lg transition-all border-2 border-[#6BB4E8] ${
-                selectedClass === key
-                  ? 'bg-[#6BB4E8] text-white shadow-[3px_3px_0_#6BB4E8]'
+                selectedClass === c.year
+                  ? 'bg-[#6BB4E8] text-white shadow-[3px_3px_0_#4A90C8]'
                   : 'bg-white text-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
               }`}
               style={{ fontFamily: 'Unbounded, sans-serif' }}
             >
-              {name}
+              {c.name}
             </button>
           ))}
         </div>
@@ -86,7 +85,7 @@ export default function Classes() {
           <div className="flex items-center gap-3 mb-6">
             <Users size={32} weight="bold" className="text-[#6BB4E8]" />
             <h2 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'Unbounded, sans-serif' }}>
-              {classNames[selectedClass]}
+              {classes.find(c => c.year === selectedClass)?.name || "Turma"}
             </h2>
           </div>
 
