@@ -59,7 +59,7 @@ export default function StudentDetail() {
 
   const loadTransferStudents = async () => {
     try {
-      const res = await axios.get(`${API}/students/class/${transferClass}`);
+      const res = await axios.get(`${API}/students/classid/${transferClass}`);
       setTransferStudents(res.data.filter(s => s.id !== studentId));
     } catch (error) {
       console.error("Erro ao carregar alunos");
@@ -197,7 +197,7 @@ export default function StudentDetail() {
               <div className="space-y-3">
                 <select value={transferClass} onChange={(e) => setTransferClass(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg text-sm">
                   <option value="">Selecione a turma</option>
-                  {classes.map(c => <option key={c.id} value={c.year}>{c.name}</option>)}
+                  {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
                 {transferClass && (
                   <select value={transferStudent} onChange={(e) => setTransferStudent(e.target.value)} className="w-full p-2 border-2 border-green-500 rounded-lg text-sm">

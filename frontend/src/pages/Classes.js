@@ -26,7 +26,7 @@ export default function Classes() {
       const res = await axios.get(`${API}/classes`);
       setClasses(res.data);
       if (res.data.length > 0) {
-        setSelectedClass(res.data[0].year);
+        setSelectedClass(res.data[0].id);
       }
     } catch (error) {
       console.error("Erro ao carregar turmas:", error);
@@ -38,7 +38,7 @@ export default function Classes() {
   const loadStudents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/students/class/${selectedClass}`);
+      const response = await axios.get(`${API}/students/classid/${selectedClass}`);
       setStudents(response.data.sort((a, b) => b.balance - a.balance));
     } catch (error) {
       console.error("Erro ao carregar alunos:", error);
@@ -67,10 +67,10 @@ export default function Classes() {
           {classes.map((c) => (
             <button
               key={c.id}
-              onClick={() => setSelectedClass(c.year)}
-              data-testid={`class-tab-${c.year}`}
+              onClick={() => setSelectedClass(c.id)}
+              data-testid={`class-tab-${c.id}`}
               className={`px-6 py-3 rounded-full font-bold text-lg transition-all border-2 border-[#6BB4E8] ${
-                selectedClass === c.year
+                selectedClass === c.id
                   ? 'bg-[#6BB4E8] text-white shadow-[3px_3px_0_#4A90C8]'
                   : 'bg-white text-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
               }`}
@@ -85,7 +85,7 @@ export default function Classes() {
           <div className="flex items-center gap-3 mb-6">
             <Users size={32} weight="bold" className="text-[#6BB4E8]" />
             <h2 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'Unbounded, sans-serif' }}>
-              {classes.find(c => c.year === selectedClass)?.name || "Turma"}
+              {classes.find(c => c.id === selectedClass)?.name || "Turma"}
             </h2>
           </div>
 

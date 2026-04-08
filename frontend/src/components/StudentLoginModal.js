@@ -35,7 +35,7 @@ export default function StudentLoginModal({ isOpen, onClose }) {
 
   const loadStudents = async () => {
     try {
-      const res = await axios.get(`${API}/students/class/${selectedClass}`);
+      const res = await axios.get(`${API}/students/classid/${selectedClass}`);
       setStudents(res.data);
     } catch (error) {
       toast.error("Erro ao carregar alunos");

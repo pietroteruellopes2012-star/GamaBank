@@ -36,7 +36,8 @@ class Student(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
-    class_year: str
+    class_id: str
+    class_year: str = ""
     balance: int = 0
     password: str = "1234"
 
@@ -309,6 +310,12 @@ async def delete_student(student_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Aluno não encontrado")
     return {"success": True}
+
+
+@api_router.get("/students/class/{class_id}")
+async def get_students_by_class_id(class_id: str):
+    students = await db.students.find({"class_id": class_id}, {"_id": 0}).to_list(1000)
+    return students
 
 
 @api_router.get("/benefits", response_model=List[Benefit])

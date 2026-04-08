@@ -117,7 +117,7 @@ export default function AdminPanel() {
   const startNew = () => {
     setEditing({ id: null });
     if (activeTab === "students") {
-      setFormData({ name: "", class_year: allClasses[0]?.year || "", balance: 0 });
+      setFormData({ name: "", class_id: allClasses[0]?.id || "", class_year: allClasses[0]?.year || "", balance: 0, password: "1234" });
     } else if (activeTab === "benefits") {
       setFormData({ name: "", description: "", cost: 0, image_url: "" });
     } else if (activeTab === "activities") {
@@ -192,7 +192,7 @@ export default function AdminPanel() {
                     <div>
                       <p className="font-bold text-[#4A90C8]">{s.name}</p>
                       <p className="text-sm text-[#4A90C8]">
-                        {s.class_year === "8" ? "8º Ano" : s.class_year === "9" ? "9º Ano" : "1º Colegial"} - {s.balance} gamas
+                        {allClasses.find(c => c.id === s.class_id)?.name || s.class_year || "Sem turma"} - {s.balance} gamas
                       </p>
                     </div>
                     <div className="flex gap-2">
@@ -420,13 +420,20 @@ export default function AdminPanel() {
                         className="border-2 border-[#6BB4E8]"
                       />
                       <select
-                        value={formData.class_year || ""}
-                        onChange={(e) => setFormData({ ...formData, class_year: e.target.value })}
+                        value={formData.class_id || ""}
+                        onChange={(e) => {
+                          const selectedClass = allClasses.find(c => c.id === e.target.value);
+                          setFormData({ 
+                            ...formData, 
+                            class_id: e.target.value,
+                            class_year: selectedClass?.year || ""
+                          });
+                        }}
                         className="w-full p-2 border-2 border-[#6BB4E8] rounded-lg"
                       >
                         <option value="">Selecione a turma</option>
                         {allClasses.map((c) => (
-                          <option key={c.id} value={c.year}>{c.name}</option>
+                          <option key={c.id} value={c.id}>{c.name}</option>
                         ))}
                       </select>
                       <Input
