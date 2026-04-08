@@ -218,6 +218,12 @@ async def get_students_by_class(class_year: str):
     return students
 
 
+@api_router.get("/students/classid/{class_id}")
+async def get_students_by_class_id(class_id: str):
+    students = await db.students.find({"class_id": class_id}, {"_id": 0}).to_list(1000)
+    return students
+
+
 @api_router.get("/students/{student_id}", response_model=StudentWithTransactions)
 async def get_student_detail(student_id: str):
     student = await db.students.find_one({"id": student_id}, {"_id": 0})
@@ -316,6 +322,27 @@ async def delete_student(student_id: str):
 async def get_students_by_class_id(class_id: str):
     students = await db.students.find({"class_id": class_id}, {"_id": 0}).to_list(1000)
     return students
+
+
+@api_router.post("/admin/migrate-students")
+async def migrate_students():
+    classes_list = await db.classes.find({}, {"_id": 0}).to_list(1000)
+    students = await db.students.find({}, {"_id": 0}).to_list(1000)
+    
+    updated = 0
+    for student in students:
+        if "class_id" not in student or not student.get("class_id"):
+            class_year = student.get("class_year", "")
+            matching_class = next((c for c in classes_list if c.get("year") == class_year), None)
+            
+            if matching_class:
+                await db.students.update_one(
+                    {"id": student["id"]},
+                    {"$set": {"class_id": matching_class["id"]}}
+                )
+                updated += 1
+    
+    return {"message": f"Migração concluída! {updated} alunos atualizados."}
 
 
 @api_router.get("/benefits", response_model=List[Benefit])
