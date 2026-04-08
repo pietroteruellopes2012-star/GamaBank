@@ -127,6 +127,17 @@ export default function AdminPanel() {
     }
   };
 
+  const generateImageFromName = (name) => {
+    if (!name || name.trim() === "") return "";
+    const keywords = name.toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(' ')
+      .filter(w => w.length > 2)
+      .slice(0, 3)
+      .join(',');
+    return `https://source.unsplash.com/400x225/?${keywords || 'education'}`;
+  };
+
   const changePassword = async () => {
     if (!passwordForm.current || !passwordForm.new) {
       toast.error("Preencha todos os campos");
@@ -465,12 +476,22 @@ export default function AdminPanel() {
 
                   {(activeTab === "benefits" || activeTab === "activities") && (
                     <>
-                      <Input
-                        placeholder="Nome"
-                        value={formData.name || ""}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="border-2 border-[#6BB4E8]"
-                      />
+                      <div>
+                        <Input
+                          placeholder="Nome"
+                          value={formData.name || ""}
+                          onChange={(e) => {
+                            const newName = e.target.value;
+                            setFormData({ 
+                              ...formData, 
+                              name: newName,
+                              image_url: formData.image_url || generateImageFromName(newName)
+                            });
+                          }}
+                          className="border-2 border-[#6BB4E8]"
+                        />
+                        <p className="text-xs text-[#4A90C8] mt-1">💡 Imagem gerada automaticamente do nome</p>
+                      </div>
                       <Input
                         placeholder="Descrição"
                         value={formData.description || ""}
@@ -490,13 +511,22 @@ export default function AdminPanel() {
                         className="border-2 border-[#6BB4E8]"
                       />
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#4A90C8]">URL da Imagem:</label>
-                        <Input
-                          placeholder="https://exemplo.com/imagem.jpg"
-                          value={formData.image_url || ""}
-                          onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                          className="border-2 border-[#6BB4E8]"
-                        />
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="URL da Imagem (opcional - auto-gerada)"
+                            value={formData.image_url || ""}
+                            onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                            className="border-2 border-[#6BB4E8] flex-1"
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, image_url: generateImageFromName(formData.name) })}
+                            className="neo-button bg-green-600 hover:bg-green-700 text-white rounded-lg px-3"
+                            title="Regerar imagem"
+                          >
+                            🔄
+                          </Button>
+                        </div>
                         {formData.image_url && formData.image_url.trim() !== "" && (
                           <div className="mt-3 border-2 border-[#6BB4E8] rounded-lg overflow-hidden bg-white">
                             <div className="text-xs font-semibold text-white bg-[#6BB4E8] p-2">
@@ -519,7 +549,7 @@ export default function AdminPanel() {
                                 }}
                                 onError={(e) => {
                                   e.target.onerror = null;
-                                  e.target.src = 'https://via.placeholder.com/400x225/6BB4E8/FFFFFF?text=URL+Invalida';
+                                  e.target.src = 'https://via.placeholder.com/400x225/6BB4E8/FFFFFF?text=Gerando...';
                                 }}
                               />
                             </div>
