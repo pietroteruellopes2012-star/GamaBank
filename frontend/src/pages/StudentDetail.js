@@ -9,12 +9,6 @@ import axios from "axios";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const classNames = {
-  "8": "8º Ano",
-  "9": "9º Ano",
-  "1": "1º Colegial"
-};
-
 export default function StudentDetail() {
   const { studentId } = useParams();
   const navigate = useNavigate();
@@ -31,6 +25,7 @@ export default function StudentDetail() {
   const [transferDesc, setTransferDesc] = useState("");
   const [classes, setClasses] = useState([]);
   const [transferStudents, setTransferStudents] = useState([]);
+  const [studentClass, setStudentClass] = useState(null);
 
   useEffect(() => {
     loadStudent();
@@ -71,6 +66,11 @@ export default function StudentDetail() {
     try {
       const response = await axios.get(`${API}/students/${studentId}`);
       setStudent(response.data);
+      if (response.data.class_id) {
+        const classRes = await axios.get(`${API}/classes`);
+        const foundClass = classRes.data.find(c => c.id === response.data.class_id);
+        setStudentClass(foundClass);
+      }
     } catch (error) {
       console.error("Erro ao carregar aluno:", error);
       toast.error("Erro ao carregar dados do aluno");
@@ -174,7 +174,7 @@ export default function StudentDetail() {
                   {student.name}
                 </h1>
                 <p className="text-base sm:text-lg text-[#4B5563] font-semibold">
-                  {classNames[student.class_year]}
+                  {studentClass?.name || "Turma"}
                 </p>
               </div>
               <div className="text-left sm:text-right w-full sm:w-auto">

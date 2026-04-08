@@ -339,7 +339,7 @@ export default function AdminPanel() {
                       <div key={s.id} className="flex justify-between items-center p-4 bg-[#E8F4FA] rounded-lg border-2 border-[#6BB4E8]">
                         <div>
                           <p className="font-bold text-[#4A90C8]">{s.name}</p>
-                          <p className="text-sm text-[#4A90C8]">{s.class_year === "8" ? "8º Ano" : s.class_year === "9" ? "9º Ano" : "1º Colegial"}</p>
+                          <p className="text-sm text-[#4A90C8]">{allClasses.find(c => c.id === s.class_id)?.name || "Sem turma"}</p>
                         </div>
                         <Button
                           onClick={() => {

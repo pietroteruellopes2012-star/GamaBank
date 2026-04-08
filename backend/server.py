@@ -434,22 +434,24 @@ async def seed_database():
     await db.bank.insert_one({"balance": 10000})
     
     students = [
-        {"id": str(uuid.uuid4()), "name": "Guilherme", "class_year": "8", "balance": 45, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Chade", "class_year": "8", "balance": 62, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Heitor", "class_year": "8", "balance": 38, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Pietro", "class_year": "9", "balance": 78, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Maria Eduarda", "class_year": "9", "balance": 95, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Izabella", "class_year": "9", "balance": 83, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Livia", "class_year": "9", "balance": 70, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Hetore", "class_year": "9", "balance": 56, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Paula", "class_year": "9", "balance": 88, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Maria Helena", "class_year": "9", "balance": 92, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Ana", "class_year": "1", "balance": 110, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Anne", "class_year": "1", "balance": 105, "password": "1234"},
-        {"id": str(uuid.uuid4()), "name": "Otavio", "class_year": "1", "balance": 98, "password": "1234"}
+        {"id": str(uuid.uuid4()), "name": "Guilherme", "class_id": "", "class_year": "8", "balance": 45, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Chade", "class_id": "", "class_year": "8", "balance": 62, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Heitor", "class_id": "", "class_year": "8", "balance": 38, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Pietro", "class_id": "", "class_year": "9", "balance": 78, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Maria Eduarda", "class_id": "", "class_year": "9", "balance": 95, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Izabella", "class_id": "", "class_year": "9", "balance": 83, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Livia", "class_id": "", "class_year": "9", "balance": 70, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Hetore", "class_id": "", "class_year": "9", "balance": 56, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Paula", "class_id": "", "class_year": "9", "balance": 88, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Maria Helena", "class_id": "", "class_year": "9", "balance": 92, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Ana", "class_id": "", "class_year": "1", "balance": 110, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Anne", "class_id": "", "class_year": "1", "balance": 105, "password": "1234"},
+        {"id": str(uuid.uuid4()), "name": "Otavio", "class_id": "", "class_year": "1", "balance": 98, "password": "1234"}
     ]
     
     await db.students.insert_many(students)
+    
+    await axios.post(f"{os.environ.get('API_URL', 'http://localhost:8001')}/api/admin/migrate-students")
     
     benefits = [
         {
