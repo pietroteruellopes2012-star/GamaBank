@@ -506,7 +506,17 @@ export default function AdminPanel() {
                               <img
                                 src={formData.image_url}
                                 alt="Preview"
-                                className="w-full h-full object-cover"
+                                loading="lazy"
+                                style={{ 
+                                  position: 'absolute',
+                                  top: 0,
+                                  left: 0,
+                                  width: '100%', 
+                                  height: '100%', 
+                                  objectFit: 'cover',
+                                  objectPosition: 'center',
+                                  display: 'block'
+                                }}
                                 onError={(e) => {
                                   e.target.onerror = null;
                                   e.target.src = 'https://via.placeholder.com/400x225/6BB4E8/FFFFFF?text=URL+Invalida';

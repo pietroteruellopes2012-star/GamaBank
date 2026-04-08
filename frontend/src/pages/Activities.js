@@ -50,13 +50,20 @@ export default function Activities() {
               className="neo-card overflow-hidden"
               data-testid={`activity-card-${index}`}
             >
-              <div className="aspect-video overflow-hidden border-b-2 border-[#6BB4E8]">
+              <div className="aspect-video overflow-hidden border-b-2 border-[#6BB4E8] bg-gray-100">
                 <img
                   src={activity.image_url}
                   alt={activity.name}
-                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    display: 'block'
+                  }}
                   onError={(e) => {
-                    e.target.src = 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400';
+                    e.target.src = 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=225&fit=crop';
                   }}
                 />
               </div>
