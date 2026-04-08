@@ -32,15 +32,15 @@ export default function Activities() {
         transition={{ duration: 0.5 }}
       >
         <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter mb-4" style={{ fontFamily: 'Unbounded, sans-serif' }}>
             <span className="text-[#6BB4E8]">Como Ganhar</span> <span className="text-[#6BB4E8]">GAMAS</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#4B5563] max-w-2xl mx-auto">
+          <p className="text-lg md:text-lg sm:text-xl text-[#4B5563] max-w-2xl mx-auto">
             Realize essas atividades e acumule gamas!
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {activities.map((activity, index) => (
             <motion.div
               key={activity.id}
@@ -58,7 +58,7 @@ export default function Activities() {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-black tracking-tighter mb-2" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+                <h3 className="text-lg sm:text-xl font-black tracking-tighter mb-2" style={{ fontFamily: 'Unbounded, sans-serif' }}>
                   {activity.name}
                 </h3>
                 <p className="text-[#4B5563] mb-4 text-sm leading-relaxed">

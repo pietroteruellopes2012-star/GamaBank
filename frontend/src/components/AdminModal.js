@@ -50,7 +50,7 @@ export default function AdminModal({ isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="glass-modal sm:max-w-md">
+      <DialogContent className="glass-modal sm:max-w-[90vw] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black tracking-tighter" style={{ fontFamily: 'Unbounded, sans-serif' }}>
             {isAdmin ? "Modo Admin Ativo" : "Acesso Admin"}

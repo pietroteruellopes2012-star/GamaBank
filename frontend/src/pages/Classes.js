@@ -63,13 +63,13 @@ export default function Classes() {
           </p>
         </div>
 
-        <div className="flex justify-center gap-4 mb-12 flex-wrap">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
           {classes.map((c) => (
             <button
               key={c.id}
               onClick={() => setSelectedClass(c.id)}
               data-testid={`class-tab-${c.id}`}
-              className={`px-6 py-3 rounded-full font-bold text-lg transition-all border-2 border-[#6BB4E8] ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-base sm:text-lg transition-all border-2 border-[#6BB4E8] ${
                 selectedClass === c.id
                   ? 'bg-[#6BB4E8] text-white shadow-[3px_3px_0_#4A90C8]'
                   : 'bg-white text-[#6BB4E8] shadow-[2px_2px_0_#6BB4E8] hover:shadow-[3px_3px_0_#6BB4E8] hover:-translate-y-0.5'
@@ -81,10 +81,10 @@ export default function Classes() {
           ))}
         </div>
 
-        <div className="neo-card p-8">
+        <div className="neo-card p-4 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
-            <Users size={32} weight="bold" className="text-[#6BB4E8]" />
-            <h2 className="text-3xl font-black tracking-tighter" style={{ fontFamily: 'Unbounded, sans-serif' }}>
+            <Users size={24} weight="bold" className="text-[#6BB4E8] sm:w-8 sm:h-8" />
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tighter" style={{ fontFamily: 'Unbounded, sans-serif' }}>
               {classes.find(c => c.id === selectedClass)?.name || "Turma"}
             </h2>
           </div>
