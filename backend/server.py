@@ -392,12 +392,11 @@ async def delete_transaction(transaction_id: str):
 
 @api_router.post("/seed")
 async def seed_database():
-    await db.students.delete_many({})
-    await db.transactions.delete_many({})
-    await db.benefits.delete_many({})
-    await db.activities.delete_many({})
-    await db.bank.delete_many({})
+    existing_students = await db.students.count_documents({})
+    if existing_students > 0:
+        raise HTTPException(status_code=400, detail="Banco já possui dados! Use /api/force-reset para resetar (cuidado!)")
     
+    await db.bank.delete_many({})
     await db.bank.insert_one({"balance": 10000})
     
     students = [
@@ -512,7 +511,21 @@ async def seed_database():
     
     await db.activities.insert_many(activities)
     
-    return {"message": "Banco de dados populado com sucesso"}
+    return {"message": "Banco de dados inicial criado com sucesso! Dados agora estão protegidos."}
+
+
+@api_router.post("/admin/force-reset")
+async def force_reset_database(data: AdminVerify):
+    if data.password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Senha admin incorreta")
+    
+    await db.students.delete_many({})
+    await db.transactions.delete_many({})
+    await db.benefits.delete_many({})
+    await db.activities.delete_many({})
+    await db.bank.delete_many({})
+    
+    return {"message": "Banco resetado! Use /api/seed para popular novamente."}
 
 
 app.include_router(api_router)
