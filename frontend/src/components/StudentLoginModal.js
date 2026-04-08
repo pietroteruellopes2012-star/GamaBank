@@ -83,7 +83,7 @@ export default function StudentLoginModal({ isOpen, onClose }) {
             >
               <option value="">Escolha a turma</option>
               {classes.map((c) => (
-                <option key={c.id} value={c.year}>{c.name}</option>
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </div>
