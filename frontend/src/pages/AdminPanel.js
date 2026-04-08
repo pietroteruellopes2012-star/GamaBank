@@ -489,23 +489,27 @@ export default function AdminPanel() {
                         }
                         className="border-2 border-[#6BB4E8]"
                       />
-                      <div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-[#4A90C8]">URL da Imagem:</label>
                         <Input
-                          placeholder="URL da Imagem"
+                          placeholder="https://exemplo.com/imagem.jpg"
                           value={formData.image_url || ""}
                           onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                           className="border-2 border-[#6BB4E8]"
                         />
-                        {formData.image_url && (
-                          <div className="mt-3 border-2 border-[#6BB4E8] rounded-lg overflow-hidden">
-                            <p className="text-xs text-[#4A90C8] p-2 bg-[#E8F4FA]">Preview:</p>
-                            <div className="aspect-video bg-gray-100">
+                        {formData.image_url && formData.image_url.trim() !== "" && (
+                          <div className="mt-3 border-2 border-[#6BB4E8] rounded-lg overflow-hidden bg-white">
+                            <div className="text-xs font-semibold text-white bg-[#6BB4E8] p-2">
+                              Preview da Imagem:
+                            </div>
+                            <div className="aspect-video bg-gray-100 relative">
                               <img
                                 src={formData.image_url}
                                 alt="Preview"
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
-                                  e.target.src = 'https://via.placeholder.com/400x225?text=Imagem+Invalida';
+                                  e.target.onerror = null;
+                                  e.target.src = 'https://via.placeholder.com/400x225/6BB4E8/FFFFFF?text=URL+Invalida';
                                 }}
                               />
                             </div>
