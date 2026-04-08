@@ -492,15 +492,16 @@ export default function AdminPanel() {
                           value={formData.name || ""}
                           onChange={(e) => {
                             const newName = e.target.value;
+                            const shouldGenerate = !formData.image_url || formData.image_url === generateImageFromName(formData.name);
                             setFormData({ 
                               ...formData, 
                               name: newName,
-                              image_url: formData.image_url || generateImageFromName(newName)
+                              image_url: shouldGenerate ? generateImageFromName(newName) : formData.image_url
                             });
                           }}
                           className="border-2 border-[#6BB4E8]"
                         />
-                        <p className="text-xs text-[#4A90C8] mt-1">💡 Imagem gerada automaticamente do nome</p>
+                        <p className="text-xs text-[#4A90C8] mt-1">💡 Imagem auto-gerada (editável abaixo)</p>
                       </div>
                       <Input
                         placeholder="Descrição"
