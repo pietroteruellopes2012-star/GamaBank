@@ -92,6 +92,9 @@ export default function AdminPanel() {
       setEditing(null);
       setFormData({});
       loadData();
+      if (activeTab === "students") {
+        loadAllClasses();
+      }
     } catch (error) {
       toast.error("Erro ao salvar");
     }

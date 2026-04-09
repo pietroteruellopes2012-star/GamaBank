@@ -312,7 +312,6 @@ async def update_student(student_id: str, data: dict):
 @api_router.delete("/admin/students/{student_id}")
 async def delete_student(student_id: str):
     result = await db.students.delete_one({"id": student_id})
-    await db.transactions.delete_many({"student_id": student_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Aluno não encontrado")
     return {"success": True}
