@@ -1,0 +1,83 @@
+{
+  "theme": "Light mode - 'Pastel & Soft' archetype mixed with 'Neo-Brutalist' UI. This avoids the generic, immature 'baby' look while keeping the mandatory Baby Blue theme. It feels like a trendy indie game or modern streetwear brand, perfect for teenagers.",
+  "typography": {
+    "headings": "Unbounded (Wide, expressive, gaming/currency vibe)",
+    "body": "Figtree (Clean, friendly, readable dashboard font)",
+    "rules": [
+      "Banned: Inter, Roboto, Space Grotesk, or generic sans for headings.",
+      "Tight tracking on headings (tracking-tighter).",
+      "Currency (Gamas) numbers MUST be huge (text-5xl to text-7xl) and font-black.",
+      "Never default to bold for headers; mix font-light and font-black for tension."
+    ]
+  },
+  "colors": {
+    "background": "#D8EAF5 (Mandatory Baby Blue, applied to the main app body)",
+    "surface": "#FFFFFF (Pure white for cards/bento boxes to pop off the blue)",
+    "primary": "#FF5C00 (Vibrant Orange for CTAs and Gama highlights to contrast the blue)",
+    "border": "#0A0A0A (Deep Charcoal for neo-brutalist borders)",
+    "text": {
+      "main": "#0A0A0A",
+      "muted": "#4B5563"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": "Hard shadows ONLY (e.g., shadow-[4px_4px_0_#0A0A0A]). No soft, blurry shadows.",
+    "borders": "Crisp 2px solid charcoal borders on all interactive elements, cards, and containers.",
+    "glassmorphism": "Used EXCLUSIVELY for the Admin Password Overlay (bg-white/70, backdrop-blur-xl) to contrast with the flat brutalist UI.",
+    "textures": "Add subtle grain overlay to the baby blue background to make it feel tactile (like paper or canvas)."
+  },
+  "components": {
+    "buttons": "Pill-shaped or rounded-lg with 2px borders, deep shadows. Hover state: -translate-y-1, increased shadow (shadow-[6px_6px_0_#0A0A0A]).",
+    "tabs": "Pill-shaped isolated tabs. Active state gets solid #0A0A0A background and white text.",
+    "cards": "Flat solid backgrounds, 2px dark border, no soft shadows. Internal padding MUST be generous (p-6 to p-8).",
+    "tables": "Shadcn standard but customized. Remove soft grays, use solid borders, and a distinct header background (e.g., bg-[#D8EAF5]).",
+    "modals": "Shadcn Dialog customized with brutalist borders and hard shadows."
+  },
+  "grids_and_layouts": {
+    "dashboard": "Bento Grid (grid-cols-1 md:grid-cols-3 lg:grid-cols-4) with gap-6. Dense layout for data, generous padding inside.",
+    "spacing": "Use p-8 or p-12 for section containers. Avoid cramped text.",
+    "alignment": "Left-align paragraphs, inputs, and dense content. Center only if it improves visual tension."
+  },
+  "motion": {
+    "interactions": "Hover lifts on cards/buttons. Active states scale down (scale-95).",
+    "transitions": "Use Framer Motion spring animations for Gama balance changes.",
+    "page_load": "Staggered fade-up for list items (Framer Motion)."
+  },
+  "accessibility": {
+    "contrast": "Text over baby blue must be #0A0A0A. Buttons must have clear focus-visible states (focus:ring-2 focus:ring-offset-2).",
+    "testing": "All interactive elements MUST have data-testid attributes (e.g., data-testid='admin-login-input', data-testid='add-gamas-btn')."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1645891913640-9a75931c6235?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwzfHxzdHVkZW50JTIwcmVhZGluZyUyMGJvb2t8ZW58MHx8fHwxNzc0MjI4NTUxfDA&ixlib=rb-4.1.0&q=85",
+      "category": "Como Ganhar (How to Earn)",
+      "description": "Student reading a book, use as a thumbnail for 'Ler um texto da apostila' task."
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA5ODR8MHwxfHNlYXJjaHwxfHxnb2xkJTIwdHJvcGh5fGVufDB8fHx8MTc3NDIyODU1OHww&ixlib=rb-4.1.0&q=85",
+      "category": "Benefícios (Benefits)",
+      "description": "Yellow trophy, use as hero or thumbnail for the rewards store."
+    }
+  ],
+  "instructions_to_main_agent": [
+    "1. Setup: Use .js (JSX) not .tsx. Install @phosphor-icons/react for chunkier, playful icons. Install framer-motion.",
+    "2. Layout: Create a main layout where the body background is `#D8EAF5`. Create a persistent top or side nav for Home, Benefícios, Como Ganhar, Turmas.",
+    "3. Admin Access: Include a discreet 'Admin' lock icon in the header. Clicking it opens a Glassmorphism modal requesting a password ('Rodrigo123'). On success, store admin state and show Gama management controls.",
+    "4. Turmas View: Present 3 sections/tabs for '8º ano', '9º ano', '1º colegial'. List the specific students provided in the requirements with their balances.",
+    "5. Student Detail: Clicking a student shows their 'Bank Extract' (transaction history) and balance. If admin state is active, show the 'Add/Remove Gamas' form here.",
+    "6. Gamas Form: Needs an amount input, description input, and Add/Subtract buttons. Use sonner for success/error toasts.",
+    "7. Card Design: For 'Benefícios' and 'Como Ganhar', display items as tactile trading cards using the neo-brutalist style.",
+    "8. Typography Setup: Apply 'Unbounded' font to headings and 'Figtree' to body. Ensure Gamas counters use Unbounded black weight.",
+    "9. Data: Implement FastAPI + MongoDB endpoints to fetch/update students, balances, and history. Provide a seed script for the initial students if necessary."
+  ],
+  "universal_guidelines": [
+    "Do NOT center align the app container (.App { text-align: center }). Let the grid dictate flow.",
+    "Avoid standard 'SaaS blue' or generic styles. Maintain the high-contrast neo-brutalist edge.",
+    "Never use AI assistant emoji characters for icons; use Phosphor icons.",
+    "Ensure all components use named exports and pages use default exports.",
+    "Use `sonner` for toast notifications.",
+    "Include `data-testid` on everything interactive.",
+    "Prioritize using existing shadcn components, but heavily customize them with border-2 border-charcoal and hard shadows."
+  ],
+  "3d_libraries": "Framer Motion for 2D spring physics and layout transitions. No heavy 3D required, keeping it crisp and fast for school environments."
+}
